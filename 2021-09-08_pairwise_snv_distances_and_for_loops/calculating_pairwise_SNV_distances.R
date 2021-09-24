@@ -138,12 +138,3 @@ for (i in 1:nrow(dna)){
     pw_dist[i,j] = snvs
   }
 }
-
-
-
-
-
-
-
-
-
