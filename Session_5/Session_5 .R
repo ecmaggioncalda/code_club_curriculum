@@ -262,7 +262,9 @@ plotly::plot_ly(x = covid_table_10$cases, y = covid_table_10$deaths, type = "sca
 # Hint: You'll notice that the scales of the axes are very different.  
 
 
-####### 3D Interactive Visuals #######
+#################################
+#### 3D Interactive Visuals ####
+################################
 
 # Complete cases is a great function to further clean data
 # Compare covid_table_10 before and after 'complete.cases'
