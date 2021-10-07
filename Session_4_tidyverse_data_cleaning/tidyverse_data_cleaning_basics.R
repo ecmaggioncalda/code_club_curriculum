@@ -51,6 +51,7 @@ extra_data %>%
 cytokine_data %>%
   select(serum_TNFa,
          serum_CXCL.9) %>%
+  #summarize(across(everything(), ~sum(.x)))
   colSums()
 
 #DATA TIDYING ----
@@ -129,11 +130,18 @@ full_data %>%
   summarize(across(everything(), ~sum(is.na(.x)))) %>%
   view()
 
+full_data %>%
+  group_by(clade) %>%
+  tail() %>%
+  #mutate(n=n()) %>%
+  #summarize(mean(serum_TNFa)) %>%
+  view()
+
 #Ex.2 determine the mean value of each cytokine value
 cytokine_cols <- grep("serum|stool", colnames(full_data), value = TRUE)
 
 full_data %>%
-  summarize(across(all_of(cytokine_cols), ~mean(.x))) %>%
+  summarize(across(all_of(cytokine_cols), ~mean(.x, na.rm = TRUE))) %>%
   view()
 
 #Practice Problem: using drop_na(), drop all rows where IDSA_severe_mod is NA, and then find the max cytokine value for serum_TNFa
@@ -146,6 +154,7 @@ full_data %>%
 #if you don't want it to drop NA values, and still want to filter by a specified value, include a second expression
 
 #Practice: filter full_data to include only clade 2 strains. Repeat this exercise so that clade NA strains are not dropped as well.
+filter()
 
 #Mutate ----
 #Mutate is similar to summarize in the way it is structured, but it instead can alter column values, create new columns, or remove columns
@@ -159,6 +168,7 @@ full_data %>%
 #convert column values from character to numeric
 cytokine_data %>%
   filter(clade != "cryptic") %>%
+  #view()
   mutate(clade = as.numeric(clade)) %>%
   str()
 

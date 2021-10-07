@@ -18,7 +18,16 @@ pivoted_cytokine_data %>%
   drop_na(Measure) %>%
   ggplot(aes(x = Cytokine,
              y = Measure)) +
-  geom_point(aes(color = as.factor(clade)))
+  geom_point(aes(color = as.factor(clade))) +
+  geom_boxplot()
+
+pivoted_cytokine_data %>%
+  drop_na(Measure) %>%
+  ggplot(aes(x = Cytokine,
+             y = Measure,
+             color = clade)) +
+  geom_point() +
+  geom_boxplot()
 
 
 #Practice Part A) Find the column(s) in each data frame that are in common using intersect() & colnames()
@@ -31,6 +40,9 @@ common_cols <- intersect(colnames(cytokine_data), colnames(extra_data))
 
 cytokine_data %>%
   select(all_of(common_cols)) %>%
+  str()
+cytokine_data %>%
+  select(common_cols) %>%
   str()
 
 extra_data %>%
@@ -46,7 +58,9 @@ full_data <- cytokine_data %>%
 
 full_data %>%
   drop_na(IDSA_severe_mod) %>%
-  summarize(max(serum_TNFa)) #%>%
+  #summary()
+  summarize(max=max(serum_TNFa),
+            min = min(serum_TNFa)) #%>%
   #view()
 
 #Practice: filter full_data to include only clade 2 strains. Repeat this exercise so that clade NA strains are not dropped as well.
