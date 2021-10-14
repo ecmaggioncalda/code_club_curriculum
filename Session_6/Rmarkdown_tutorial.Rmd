@@ -1,0 +1,285 @@
+---
+title: "Rmarkdown Tutorial"
+author: "Snitkin Lab"
+date: "10/15/2021"
+output: html_document
+---
+
+# Introduction 
+
+Rmarkdown lets you run your code in chunks and "knit" your code, plots, and text analysis into a more user-friendly document, such as html, pdf, or word. You can caption each figure and write a complete summary for each section of results. It also allows you to render interactive output.
+
+This is quite useful when you want to send your plots and analysis to a collaborator, advisor, etc. It's also great for documenting the phases of results throughout your project.
+
+We'll learn the parts of the Rmarkdown workflow here, and throughout the tutorial you will practice embedding code, writing and formatting text, and rendering your own Rmarkdown. You're also welcome to render this document to compare the code to the output.  
+
+# Writing in Rmarkdown:
+ 
+# Title
+## Main Section
+### Sub-section
+#### Sub-sub section
+
+Two spaces and enter  
+ends a line and starts a new line.  
+
+Create bullet points with * or -
+
+- Use single asterisk to italicize words *like this* or underscores _like this_  
+- Use double asterisks to bold words **like this** or double underscores __like this__  
+* Strikethrough a sentence ~~like this~~ 
+
+Create a numbered list:
+
+1. Chicken Schwarma
+  - with hummus  
+  - with rice
+  
+2. Falafel
+  - with tabbouli   
+  
+
+#### Writing equations
+subscript: X~2~  
+superscript: x^2^
+
+equation: $E = mc ^2$  
+equation block: $$E = mc ^2$$
+
+### Hyperlink a website: 
+[Click here](https://rmarkdown.rstudio.com/lesson-1.html) to learn more about R markdown.
+
+### Insert an image and caption
+![This is an iris plant](/Users/genevievechiara/Documents/Snitkin_Lab/codeclub/Session_6/Iris.jpeg)
+
+PRACTICE 1:   
+- Open a new R markdown file (File--> New File --> R Markdown) with html output and delete everything after the header (line 6) in the document.   
+- Create a bolded title and italicized main section, and within the main section make a list of the iris variable names and data types (use this code in your console for now to get that information):  
+
+data("iris")  
+View(iris)  
+str(iris)  
+
+- Hyperlink a wikipedia page about the iris plant with a caption for the link. 
+- Insert image of iris plant in Session 6 folder.  
+- Then click Knit button at top to convert to html.
+
+
+# Embedding code 
+
+Insert code chunks using Insert button at top right. Rmarkdown allows you to run your code one chunk at a time by pressing the play button within the chunk, or all at once. The Run button at the top gives you additional options of how to run the code in your document.
+
+The basic format of a code chunk is ``` at beginning and end, with the language specified in {} and the code as the body.  
+
+Example using R:  
+```{r} 
+plot(mtcars)
+```   
+
+
+PRACTICE 2: Create a new main section titled Plots in your R markdown, and then insert a code chunk for each step and practice running all chunks at once and then one at a time:  
+- load the ggplot2 package  
+- read in the iris dataset:  
+  data("iris")  
+- plot sepal length by sepal width and color the data by species (you can use this code):    
+  ggplot(iris, aes(x=Sepal.Length, y=Sepal.Width, color=Species)) + geom_point()  
+  
+  Make sure your code runs without errors and then click the Knit button to render your updated html document. 
+
+
+# Chunk Options  
+Chunk options allow you to hide code and or results from the output. Here are some examples:  
+
+```{r echo=FALSE}
+plot(mtcars)
+```
+
+```{r include=FALSE}
+plot(mtcars)
+```
+
+
+Other chunk options allow you to give your figure a caption and change the size of your figure. 
+```{r echo=FALSE, fig.cap= "Figure 1. This is a basic plot of all variables within the mtcars dataset", fig.height=6, fig.width=8}
+plot(mtcars)
+```
+
+PRACTICE 3:  
+- Create a new main section titled "Plot with Options"
+- See what happens to your rendered output when you set echo=FALSE or include=FALSE in your plot code chunk.  
+- Give your plot a caption  
+- Change the size of your plot figure
+
+### Backing up a bit: Global Chunk Option  
+
+The global chunk option uses knitr::opts_chunk$set to establish certain settings, such as figure size or echo/include statements for all chunks in the document. This helps you create a uniform document without having to re-type your options each time.  
+
+For example, I want all my figures to be 10 x 8, and I do not want any code, warnings, or messages to appear in my output because I am sending my analysis to Evan. 
+
+```{r global_options, include=FALSE}
+knitr::opts_chunk$set(fig.width=10, fig.height=8,
+                      echo=FALSE, warning=FALSE, message=FALSE)
+```
+
+However, the global options, for example figure size, can be overwritten in a particular chunk by simply stating a new figure size in that one chunk.    
+
+PRACTICE 4: Add a global options chunk to the top of your document that will hide your code, messages, and warnings, and set a standard figure size. Render your output and see if everything is uniform. If not, it may be because you still have different options in your figure chunk from before.
+
+(Also note that when you open a brand new R markdown file, it gives you the global options in the first chunk, so you normally don't have to manually add it in).
+
+#Inline code  
+
+Using R in line:
+
+`r some_value = 10.1560`
+
+There are about `r round(some_value, 2)` things in my bag.  
+
+PRACTICE 5: Using the iris dataset, find the average petal length and write a sentence using in line code. For an extra challenge, find the average petal length for each species using a chunk and then use in line code to write a sentence. (HINT: load tidyverse library to use the group_ by function). 
+
+After rendering, did you notice anything special about using R in line compared to a code chunk?  
+
+# Insert dataframe as a table  
+
+The kable function formats a dataframe nicely as a table in the output.  
+
+
+```{r echo=FALSE, include=FALSE}
+#make sure knitr library is loaded
+library(knitr)
+#create matrix
+data<- matrix(c(10,8,
+                6,5), 2,byrow=T,
+                dimname=list(Animal=c("Dog","Cat"),
+                owner=c("male","female")))
+addmargins(data)
+#Close this chunk to utilize include=false option because we don't want this table to show, we only want the nicer table to be included in output.
+```
+
+```{r echo=FALSE}
+#Use kable to format output table
+kable(data, caption = "Pet Owners")
+```
+
+
+PRACTICE 6: Make a table from iris data using all the variables and just the first 5 observations, and incorporate this table into your document. 
+
+
+### Incorporate table into HTML Tabset  
+
+The HTML tabset is a nice interactive feature. Taking the table above, I am just assigning it as an object so that I can use it in my Tabset in-line code below.
+
+```{r }
+#Make your table an object then use in-line code for tabset.
+Pet_Owners<-kable(data  , caption = "Pet Owners")
+```
+
+This is tabset format:  ## Title {.tabset} ### first tab ENTER table ### second tab ENTER text
+
+## Pet Owner Results {.tabset}
+
+### Data Table  
+`r Pet_Owners`  
+
+### Data Descripion
+Both males and females own more dogs than cats. 
+
+
+
+
+# Rendering Interactivity  
+R markdown has many options for including interactive plots and tables. You can render them with any output format. Below are some examples.
+
+## Highcharter: interactive charts
+
+```{r echo=FALSE}
+#install.packages("highcharter")
+library(highcharter)
+hchart(mtcars, "scatter", hcaes(wt, mpg, z = drat, color = hp)) %>%
+  hc_title(text = "Scatter chart with size and color")
+```
+
+## Interactive data tables 
+```{r echo=FALSE}
+#install.packages("DT")
+library(DT)
+datatable(airquality, options = list(pageLength = 10))
+```
+
+PRACTICE 7 with CHALLENGE:  
+In your R markdown, create a new main section titled Interactive Tabset. Install and download the DT library to use the datable function for transforming the iris dataset into an interactive table. Specify that only 5 entries be shown at a time. For an extra challenge, see if you can incorporate this interactive table into a tabset with 2 tabs: "Data Table" and "Data Description." You can copy and paste your list of variables and their structures into the Data description tab.
+
+
+## 3D plots  
+
+I have input the data from last week's plotly lesson so that you can recreate the 3D plot with a different image. Copy and paste these code chunks into a new section titled Interactive. Be sure to include your path to the image at the bottom of the first chunk.
+
+```{r echo=FALSE, include=FALSE}
+#library(rvest) 
+website <- read_html("https://en.wikipedia.org/wiki/COVID-19_pandemic_by_country_and_territory") 
+#library('dplyr')
+#covid_tables <- website %>% html_table() # retrieves all of the tables 
+#covid_table_10 <- covid_tables[[10]]     
+#covid_table_10<-subset(covid_table_10, select=c(2:5))
+ #library(janitor)
+#covid_table_10 <- covid_table_10 %>% clean_names()
+#str(covid_table_10)
+#library(tidyverse)
+#covid_table_10[,c(2:4)]  <- apply(X = covid_table_10[, -c(1)], MARGIN = 2, FUN = parse_number) 
+#view(covid_table_10)
+#str(covid_table_10)
+#library(plotly)
+#plotly::plot_ly(x = covid_table_10$cases, y = covid_table_10$deaths, type = "scatter", mode = 'markers', color = covid_table_10$country)  %>%layout(title = "Reported Cases vs Deaths by Country", xaxis=list(title = "Reported Cases"), yaxis = list(title = "Reported Deaths"), legend = list(orientation = 'h'), plot_bgcolor = "Black",  paper_bgcolor = 'Black',  font = list(color = "White") ) %>%  hide_legend()
+#plotly::plot_ly(x = log(covid_table_10$cases), y = log(covid_table_10$deaths), type = "scatter", mode = 'markers', color = covid_table_10$country)  %>%layout(title = "Reported Cases vs Deaths by Country", xaxis=list(title = "Reported Cases"), yaxis = list(title = "Reported Deaths"), legend = list(orientation = 'h'), plot_bgcolor = "Black",  paper_bgcolor = 'Black',  font = list(color = "White")  ) %>% hide_legend()
+#covid_table_10 <- covid_table_10[complete.cases(covid_table_10),]
+#image_file <- "/Users/genevievechiara/Documents/IMG_9306.jpeg"  # <- insert your image path
+#txt <- RCurl::base64Encode(readBin(image_file, "raw", file.info(image_file)[1, "size"]), "txt")
+```
+
+```{r echo=FALSE}
+#plot_ly(covid_table_10, x = ~log(deaths), y = ~log(cases), z = ~deaths_million, color = ~country)  %>%layout(title = "Reported Cases vs Deaths vs Deaths/Million by Country", scene = list(title = "Reported Deaths"), yaxis = list(title = "Reported Cases"),  zaxis = list(title = "Deaths/Million"),  images = list( list(
+             # Add images
+       # source =  paste('data:image/png;base64', txt, sep=','),xref = "x",yref = "y",x = 0.2, y = 3, sizex = 3,sizey = 3,sizing = "stretch",opacity = 0.4,layer = "below" ))) %>% hide_legend()
+
+```
+
+
+# Output Formats  
+
+R markdown was originally made to be used for html documents. So far you have been rendering to html_document in the header, and there are some additional nice features that you can add. In your header:  
+
+output:   
+  html_document:  
+    toc: true  
+    toc_float: true  
+    number_sections: true
+  
+The above code will give you a floating table of contents, based on how you've tabbed (#) your main and sub sections. Additionally, it will number them.
+
+You can also convert to pdf, word document, or html notebook. The easiest way is to include the output in the header, but you can also render this way:  
+
+```{r echo=FALSE}
+#library(rmarkdown)
+#render("Rmarkdown_tutorial.Rmd", output_format = "word_document")
+```
+
+PRACTICE 8: Render your R markdown as an html document with a floating table of contents and numbered sections. 
+
+## Slide show 
+
+You can create a slide presentation by including ioslides_presentation in the output of your heading.  
+
+PRACTICE 9: Create slides with your current R markdown, and note what determines a new slide. If you'd like your bullet points to appear one at a time, try this in your header:
+
+output:  
+    ioslides_presentation:  
+    incremental: true
+    
+I also like the smaller font appearance:   
+
+output:  
+    ioslides_presentation:  
+    incremental: true
+    smaller: true
+
+
